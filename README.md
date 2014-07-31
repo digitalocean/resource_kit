@@ -48,7 +48,7 @@ class DropletResource < ResourceKit::Resource
     action :create do
       path '/droplets'
       verb :post
-      body {|object| DropletMapping.representation_for(:create, object) }
+      body {|object| DropletMapping.representation_for(:create, object) } # Generate a response body from a passed object
       handler(202) {|body| DropletMapping.extract_single(body, :read) }
     end
   end
