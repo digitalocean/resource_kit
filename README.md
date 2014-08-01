@@ -31,13 +31,14 @@ When you're able to answer these questions, you can describe them in your resour
 ```ruby
 class DropletResource < ResourceKit::Resource
   resources do
+    default_handler(422) {|body| ErrorMapping.extract_single(body, :read) }
+    default_handler(:ok, :created) {|body| DropletMapping.extract_single(body, :read) }
+
     # Defining actions will create instance methods on the resource class to call them.
     action :find do
       verb :get # get is assumed if this is omitted
       path '/droplets/:id'
-      params :id
       handler(200) {|body| DropletMapping.extract_single(body, :read) }
-      handler(422) {|body| ErrorMapping.extract_single(body, :read) }
     end
 
     action :all do
@@ -73,7 +74,11 @@ single_droplet = resource.find(id: 123)
 create = resource.create(Droplet.new)
 ```
 
+### Nice to have's
 
+Things we've thought about but just haven't implemented are:
+
+* `action :find, 'PUT droplets/:id/restart'`
 
 
 ## Contributing
