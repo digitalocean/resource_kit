@@ -11,5 +11,20 @@ RSpec.describe ResourceKit::Resource do
     it 'yields a resource collection' do
       expect { |b| resource.resources(&b) }.to yield_with_args(instance_of(ResourceKit::ResourceCollection))
     end
+
+    context 'action methods' do
+      class DropletResource < described_class
+        resources do
+          action :find
+          action :all
+        end
+      end
+
+      subject(:droplet_resource) { DropletResource.new }
+
+      it "defines the action method" do
+        expect(droplet_resource).to respond_to(:find)
+      end
+    end
   end
 end

@@ -5,5 +5,6 @@ module ResourceKit
   autoload :ResourceCollection, 'resource_kit/resource_collection'
 
   autoload :Action, 'resource_kit/action'
+  autoload :MethodFactory, 'resource_kit/method_factory'
 
 end

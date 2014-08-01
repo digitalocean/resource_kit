@@ -1,7 +1,7 @@
 module ResourceKit
   class ResourceCollection
     extend Forwardable
-    def_delegators :@collection, *(Array.instance_methods - Object.instance_methods)
+    def_delegators :@collection, :find, :<<, :each, :include?
 
     def initialize
       @collection = []
@@ -14,9 +14,9 @@ module ResourceKit
     end
 
     def find_action(name)
-      select do |action|
+      find do |action|
         action.name == name
-      end[0]
+      end
     end
   end
 end
