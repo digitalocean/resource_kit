@@ -15,5 +15,13 @@ module ResourceKit
       @path = path if path
       @path
     end
+
+    def handlers
+      @handlers ||= {}
+    end
+
+    def handler(*response_codes, &block)
+      response_codes.each {|code| handlers[code] = block }
+    end
   end
 end
