@@ -63,7 +63,7 @@ Now that we've described our resources. We can instantiate our class with a conn
 
 ```ruby
 connection = Faraday.new(url: 'http://api.digitalocean.com') do |req|
-  f.adapter :net_http
+  req.adapter :net_http
 end
 
 resource = DropletResource.new(connection)
