@@ -30,6 +30,11 @@ RSpec.describe ResourceKit::Action do
     it 'adds a handler to the handlers' do
       expect { action.handler(202) { } }.to change(action.handlers, :size).from(0).to(1)
     end
+
+    it 'adds the correct status code when using a symbol' do
+      action.handler(:ok) {}
+      expect(action.handlers).to have_key(200)
+    end
   end
 
   describe '#handlers' do

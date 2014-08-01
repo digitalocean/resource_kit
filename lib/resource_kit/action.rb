@@ -21,7 +21,12 @@ module ResourceKit
     end
 
     def handler(*response_codes, &block)
-      response_codes.each {|code| handlers[code] = block }
+      response_codes.each do |code|
+        unless code.is_a?(Fixnum)
+          code = StatusCodeMapper.code_for(code)
+        end
+        handlers[code] = block
+      end
     end
 
     def body(&block)
