@@ -38,6 +38,7 @@ RSpec.describe ResourceKit::EndpointResolver do
 
       it 'creates a populated URL from passed values' do
         endpoint = resolver.resolve(id: 1066)
+        expect(endpoint).to eq('http://api.something.com/v2/users/1066')
       end
 
       it 'handles multiple passed values' do

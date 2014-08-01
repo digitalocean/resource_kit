@@ -20,11 +20,20 @@ RSpec.describe ResourceKit::Resource do
         end
       end
 
-      subject(:droplet_resource) { DropletResource.new }
+      subject(:droplet_resource) { DropletResource.new(double) }
 
       it "defines the action method" do
         expect(droplet_resource).to respond_to(:find)
       end
+    end
+  end
+
+  describe '#initialize' do
+    it 'initializes with a connection' do
+      faraday = Faraday.new(url: 'http://lol.com')
+      instance = ResourceKit::Resource.new(faraday)
+
+      expect(instance.connection).to be(faraday)
     end
   end
 end

@@ -1,5 +1,6 @@
 require "resource_kit/version"
 require 'active_support/core_ext'
+require 'faraday'
 
 module ResourceKit
   autoload :Resource, 'resource_kit/resource'
