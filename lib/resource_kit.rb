@@ -7,4 +7,6 @@ module ResourceKit
   autoload :Action, 'resource_kit/action'
   autoload :MethodFactory, 'resource_kit/method_factory'
 
+  autoload :StatusCodeMapper, 'resource_kit/status_code_mapper'
+
 end
