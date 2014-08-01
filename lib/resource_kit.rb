@@ -1,4 +1,5 @@
 require "resource_kit/version"
+require 'active_support/core_ext'
 
 module ResourceKit
   autoload :Resource, 'resource_kit/resource'
@@ -8,5 +9,6 @@ module ResourceKit
   autoload :MethodFactory, 'resource_kit/method_factory'
 
   autoload :StatusCodeMapper, 'resource_kit/status_code_mapper'
+  autoload :EndpointResolver, 'resource_kit/endpoint_resolver'
 
 end
