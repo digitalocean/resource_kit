@@ -2,19 +2,17 @@ require 'addressable/uri'
 
 module ResourceKit
   class EndpointResolver
-    attr_reader :host, :path, :namespace, :query_param_keys, :extension
+    attr_reader :path, :query_param_keys
 
     def initialize(options = {})
-      @host = options[:host]
       @path = options[:path]
-      @namespace = options[:namespace]
       @query_param_keys = options[:query_param_keys] || {}
     end
 
     def resolve(values = {})
-      uri = Addressable::URI.parse(host)
+      uri = Addressable::URI.new
       new_path = generated_path(values)
-      uri.path = normalized_path_components(namespace, new_path)
+      uri.path = normalized_path_components(new_path)
       uri.query = append_query_values(uri, values) unless query_param_keys.empty?
 
       uri.to_s
@@ -32,7 +30,7 @@ module ResourceKit
       components.reject(&:blank?).map do |piece|
         # Remove leading and trailing forward slashes
         piece.gsub(/(^\/)|(\/$)/, '')
-      end.join('/')
+      end.join('/').insert(0, '/')
     end
 
     def append_query_values(uri, values)

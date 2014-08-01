@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe ResourceKit::MethodFactory do
   let(:collection) { ResourceKit::ResourceCollection.new }
-  let(:klass) { Class.new }
+  let(:klass) { Class.new { attr_accessor :connection } }
 
   describe '.construct' do
     before do
@@ -41,8 +41,10 @@ RSpec.describe ResourceKit::MethodFactory do
 
       ResourceKit::MethodFactory.construct(klass, collection, invoker)
 
-      klass.new.bunk('something')
-      expect(invoker).to have_received(:call).with(action, 'something')
+      instance = klass.new
+      instance.connection = double('connection')
+      instance.bunk('something', 'something else')
+      expect(invoker).to have_received(:call).with(action, instance.connection, 'something', 'something else')
     end
   end
 end

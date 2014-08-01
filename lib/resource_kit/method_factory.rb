@@ -1,6 +1,6 @@
 module ResourceKit
   class MethodFactory
-    def self.construct(object, resource_collection, invoker = Class)
+    def self.construct(object, resource_collection, invoker = ActionInvoker)
       resource_collection.each do |action|
         if object.method_defined?(action.name)
           raise ArgumentError, "Action '#{action.name}' is already defined on `#{object}`"
@@ -13,7 +13,7 @@ module ResourceKit
 
     def self.method_for_action(action, invoker)
       Proc.new do |*args|
-        invoker.call(action, *args)
+        invoker.call(action, connection, *args)
       end
     end
   end

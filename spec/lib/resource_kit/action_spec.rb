@@ -38,4 +38,13 @@ RSpec.describe ResourceKit::Action do
       expect(collection).to be_kind_of(Hash)
     end
   end
+
+  describe '#body' do
+    it 'stores a proc for handling requests with bodies' do
+      handler = Proc.new {|object| 'whut whut' }
+      action.body(&handler)
+
+      expect(action.body).to be(handler)
+    end
+  end
 end

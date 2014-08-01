@@ -23,5 +23,10 @@ module ResourceKit
     def handler(*response_codes, &block)
       response_codes.each {|code| handlers[code] = block }
     end
+
+    def body(&block)
+      @body_handler = block if block_given?
+      @body_handler
+    end
   end
 end
