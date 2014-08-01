@@ -30,9 +30,6 @@ When you're able to answer these questions, you can describe them in your resour
 
 ```ruby
 class DropletResource < ResourceKit::Resource
-  host 'https://api.blah'
-  namespace 'v1'
-
   resources do
     default_handler(422) {|response| ErrorMapping.extract_single(response.body, :read) }
     default_handler(:ok, :created) {|response| DropletMapping.extract_single(response.body, :read) }
