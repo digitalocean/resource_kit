@@ -8,13 +8,8 @@ RSpec.describe ResourceKit::Resource do
       expect(resource.resources).to be_kind_of(ResourceKit::ResourceCollection)
     end
 
-    it 'yields a resource collection instance to the block if passed' do
-      klass = nil
-      resource.resources do
-        klass = self
-      end
-
-      expect(klass).to be_kind_of(ResourceKit::ResourceCollection)
+    it 'yields a resource collection' do
+      expect { |b| resource.resources(&b) }.to yield_with_args(instance_of(ResourceKit::ResourceCollection))
     end
   end
 end
