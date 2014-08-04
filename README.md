@@ -96,7 +96,7 @@ Things we've thought about but just haven't implemented are:
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/resource_kit/fork )
+1. Fork it ( https://github.com/digitaloceancloud/resource_kit/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
