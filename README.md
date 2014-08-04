@@ -56,6 +56,18 @@ class DropletResource < ResourceKit::Resource
 end
 ```
 
+You also have the option to use a shorter version to describe actions like this:
+
+```ruby
+class DropletResource < ResourceKit::Resource
+  resources do
+    action :all, 'GET /v2/droplets' do
+      handler(:ok) { |response| DropletMapping.extract_collection(response.body, :read) }
+    end
+  end
+end
+```
+
 Now that we've described our resources. We can instantiate our class with a connection object. ResourceKit relies on the interface that Faraday provides. For example:
 
 ```ruby

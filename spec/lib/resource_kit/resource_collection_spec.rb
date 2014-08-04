@@ -12,6 +12,13 @@ RSpec.describe ResourceKit::ResourceCollection do
       action = collection.action :all
       expect(collection).to include(action)
     end
+
+    it "accepts a second argument of VERB /resource" do
+      action = collection.action :all, 'GET /v2/droplets'
+      expect(action.verb).to eq :get
+      expect(action.path).to eq '/v2/droplets'
+      expect(action.name).to eq :all
+    end
   end
 
   describe '#find_action' do

@@ -3,6 +3,8 @@ require 'active_support/core_ext'
 require 'faraday'
 
 module ResourceKit
+  ALLOWED_VERBS = [:get, :post, :put, :delete, :head, :patch, :options]
+
   autoload :Resource, 'resource_kit/resource'
   autoload :ResourceCollection, 'resource_kit/resource_collection'
 

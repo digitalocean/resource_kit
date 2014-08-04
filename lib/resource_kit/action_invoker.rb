@@ -1,7 +1,5 @@
 module ResourceKit
   class ActionInvoker
-    ALLOWED_VERBS = [:get, :post, :put, :delete, :head, :patch, :options]
-
     def self.call(action, connection, *args)
       raise ArgumentError, "Verb '#{action.verb}' is not allowed" unless action.verb.in?(ALLOWED_VERBS)
       options = args.last.kind_of?(Hash) ? args.last : {}

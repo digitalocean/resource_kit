@@ -2,8 +2,10 @@ module ResourceKit
   class Action
     attr_reader :name
 
-    def initialize(name)
+    def initialize(name, verb = nil, path = nil)
       @name = name
+      @verb = (verb && verb.downcase.to_sym) || :get
+      @path = path
     end
 
     def verb(v = nil)
