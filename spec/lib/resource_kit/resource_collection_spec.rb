@@ -3,6 +3,16 @@ require 'spec_helper'
 RSpec.describe ResourceKit::ResourceCollection do
   subject(:collection) { ResourceKit::ResourceCollection.new }
 
+  describe '#default_handler' do
+    it 'adds the passed black to a hash of handlers on the resource collection' do
+      handler_block = Proc.new {|b| 'whut whut' }
+      collection.default_handler(:ok, :no_content, &handler_block)
+
+      expect(collection.default_handlers[200]).to eq(handler_block)
+      expect(collection.default_handlers[204]).to eq(handler_block)
+    end
+  end
+
   describe '#action' do
     it 'yields an action to the block' do
       expect {|b| collection.action(:all, &b) }.to yield_with_args(instance_of(ResourceKit::Action))
@@ -18,6 +28,17 @@ RSpec.describe ResourceKit::ResourceCollection do
       expect(action.verb).to eq :get
       expect(action.path).to eq '/v2/droplets'
       expect(action.name).to eq :all
+    end
+
+    context 'when default handlers have been specified on the collection' do
+      let(:handler) { Proc.new {|response| 'sure' } }
+
+      before { collection.default_handler(:ok, &handler) }
+
+      it 'prepends the default handlers to the test' do
+        action = collection.action(:all)
+        expect(action.handlers[200]).to eq(handler)
+      end
     end
   end
 

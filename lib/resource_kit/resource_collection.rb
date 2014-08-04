@@ -9,8 +9,22 @@ module ResourceKit
 
     def action(name, verb_and_path = nil, &block)
       action = Action.new(name, *parse_verb_and_path(verb_and_path))
+      action.handlers.merge!(default_handlers.dup)
       action.instance_eval(&block) if block_given?
       action.tap {|a| self << a }
+    end
+
+    def default_handler(*response_codes, &block)
+      response_codes.each do |code|
+        unless code.is_a?(Fixnum)
+          code = StatusCodeMapper.code_for(code)
+        end
+        default_handlers[code] = block
+      end
+    end
+
+    def default_handlers
+      @default_handlers ||= {}
     end
 
     def find_action(name)
