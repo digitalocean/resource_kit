@@ -52,15 +52,6 @@ RSpec.describe ResourceKit::ActionInvoker do
     end
 
     context 'for requests with bodies' do
-      it 'includes the contents of the body in the request' do
-        action.verb :post
-        action.path '/users'
-        action.body {|str| str }
-
-        result = ResourceKit::ActionInvoker.call(action, connection, 'echo me')
-        expect(result).to eq('echo me')
-      end
-
       it 'uses the body handler when present' do
         action.verb :post
         action.path '/users'
@@ -68,6 +59,15 @@ RSpec.describe ResourceKit::ActionInvoker do
 
         result = ResourceKit::ActionInvoker.call(action, connection, 'echo me')
         expect(result).to eq('i am a banana')
+      end
+
+      it 'uses the body handler with multiple arity when present' do
+        action.verb :post
+        action.path '/users'
+        action.body {|first, second| first + second }
+
+        result = ResourceKit::ActionInvoker.call(action, connection, 'echo me', ' another')
+        expect(result).to eq('echo me another')
       end
     end
   end
