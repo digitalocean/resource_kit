@@ -90,7 +90,6 @@ create = resource.create(Droplet.new)
 
 Things we've thought about but just haven't implemented are:
 
-* `action :find, 'PUT droplets/:id/restart'`
 * Pagination capabilities
 
 
