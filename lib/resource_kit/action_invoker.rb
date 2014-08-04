@@ -4,13 +4,13 @@ module ResourceKit
 
     def self.call(action, connection, *args)
       raise ArgumentError, "Verb '#{action.verb}' is not allowed" unless action.verb.in?(ALLOWED_VERBS)
-      options = args.extract_options!
+      options = args.last.kind_of?(Hash) ? args.last : {}
       resolver = EndpointResolver.new(path: action.path)
 
-      if args.size > 0 and action.verb.in?([:post, :put, :patch])
+      if action.body and action.verb.in?([:post, :put, :patch])
         # This request is going to have a response body. Handle it.
         response = connection.send(action.verb, resolver.resolve(options)) do |request|
-          request.body = construct_body(args.first, action)
+          request.body = construct_body(*args, action)
         end
       else
         response = connection.send(action.verb, resolver.resolve(options))
@@ -27,12 +27,8 @@ module ResourceKit
       end
     end
 
-    def self.construct_body(object, action)
-      if action.body
-        action.body.call(object)
-      else
-        object.to_s
-      end
+    def self.construct_body(*args, action)
+      action.body.call(*args[0..(action.body.arity - 1)])
     end
   end
 end

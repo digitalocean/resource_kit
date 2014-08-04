@@ -55,6 +55,7 @@ RSpec.describe ResourceKit::ActionInvoker do
       it 'includes the contents of the body in the request' do
         action.verb :post
         action.path '/users'
+        action.body {|str| str }
 
         result = ResourceKit::ActionInvoker.call(action, connection, 'echo me')
         expect(result).to eq('echo me')
