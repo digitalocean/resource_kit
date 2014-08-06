@@ -1,6 +1,6 @@
 module ResourceKit
   class Resource
-    class_attribute :namespace
+    class_attribute :_resources
 
     attr_reader :connection
 
@@ -9,11 +9,15 @@ module ResourceKit
     end
 
     def self.resources(&block)
-      @resources ||= ResourceCollection.new
-      @resources.instance_eval(&block) if block_given?
+      self._resources ||= ResourceCollection.new
+      self._resources.instance_eval(&block) if block_given?
 
-      MethodFactory.construct(self, @resources)
-      @resources
+      MethodFactory.construct(self, self._resources)
+      self._resources
+    end
+
+    def action(name)
+      _resources.find_action(name)
     end
   end
 end

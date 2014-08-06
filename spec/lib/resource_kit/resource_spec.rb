@@ -36,4 +36,20 @@ RSpec.describe ResourceKit::Resource do
       expect(instance.connection).to be(faraday)
     end
   end
+
+  describe '#action' do
+    it 'returns the action for the name passed' do
+      faraday = Faraday.new(url: 'http://lol.com')
+
+      class DummyResource < described_class
+        resources do
+          action :find, 'GET /hello'
+        end
+      end
+
+      instance = DummyResource.new(faraday)
+
+      expect(instance.action(:find)).to be_kind_of(ResourceKit::Action)
+    end
+  end
 end
