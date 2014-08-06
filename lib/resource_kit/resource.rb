@@ -19,5 +19,9 @@ module ResourceKit
     def action(name)
       _resources.find_action(name)
     end
+
+    def action_and_connection(action_name)
+      ActionConnection.new(action(action_name), connection)
+    end
   end
 end

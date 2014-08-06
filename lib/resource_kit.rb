@@ -4,6 +4,7 @@ require 'faraday'
 
 module ResourceKit
   ALLOWED_VERBS = [:get, :post, :put, :delete, :head, :patch, :options]
+  ActionConnection = Struct.new(:action, :connection)
 
   autoload :Resource, 'resource_kit/resource'
   autoload :ResourceCollection, 'resource_kit/resource_collection'
