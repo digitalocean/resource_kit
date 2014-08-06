@@ -6,7 +6,7 @@ module ResourceKit
 
     def initialize(options = {})
       @path = options[:path]
-      @query_param_keys = options[:query_param_keys] || {}
+      @query_param_keys = options[:query_param_keys] || []
     end
 
     def resolve(values = {})

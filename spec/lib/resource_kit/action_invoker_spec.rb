@@ -8,6 +8,7 @@ RSpec.describe ResourceKit::ActionInvoker do
       stub.get('/users/bad_page') { |env| [404, {}, 'not found'] }
       stub.get('/users/12') { |env| [200, {}, 'user 12'] }
       stub.post('/users') { |env| [200, {}, env[:body]] }
+      stub.get('/paged') { |env| [200, {}, env[:url].to_s] }
     end
   end
   let(:action) { ResourceKit::Action.new(:find) }
@@ -68,6 +69,18 @@ RSpec.describe ResourceKit::ActionInvoker do
 
         result = ResourceKit::ActionInvoker.call(action, connection, 'echo me', ' another')
         expect(result).to eq('echo me another')
+      end
+    end
+
+    context 'for requests with query params' do
+      it 'appends the query parameters to the endpoint' do
+        action.query_keys :per_page, :page
+        action.path '/paged'
+
+        result = ResourceKit::ActionInvoker.call(action, connection, page: 3, per_page: 300)
+        addressed = Addressable::URI.parse(result)
+
+        expect(addressed.query_values).to include('per_page' => '300', 'page' => '3')
       end
     end
   end

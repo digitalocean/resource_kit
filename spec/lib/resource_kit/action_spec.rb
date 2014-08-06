@@ -52,4 +52,11 @@ RSpec.describe ResourceKit::Action do
       expect(action.body).to be(handler)
     end
   end
+
+  describe '#query_keys' do
+    it 'allows setting known query parameters that we should append to the URL' do
+      action.query_keys :per_page, :page
+      expect(action.query_keys).to include(:per_page, :page)
+    end
+  end
 end

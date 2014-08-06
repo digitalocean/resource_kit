@@ -3,7 +3,7 @@ module ResourceKit
     def self.call(action, connection, *args)
       raise ArgumentError, "Verb '#{action.verb}' is not allowed" unless action.verb.in?(ALLOWED_VERBS)
       options = args.last.kind_of?(Hash) ? args.last : {}
-      resolver = EndpointResolver.new(path: action.path)
+      resolver = EndpointResolver.new(path: action.path, query_param_keys: action.query_keys)
 
       if action.body and action.verb.in?([:post, :put, :patch])
         # This request is going to have a response body. Handle it.

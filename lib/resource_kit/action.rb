@@ -6,6 +6,7 @@ module ResourceKit
       @name = name
       @verb = (verb && verb.downcase.to_sym) || :get
       @path = path
+      @query_keys = []
     end
 
     def verb(v = nil)
@@ -16,6 +17,11 @@ module ResourceKit
     def path(path = nil)
       @path = path if path
       @path
+    end
+
+    def query_keys(*keys)
+      return @query_keys if keys.empty?
+      @query_keys += keys
     end
 
     def handlers
