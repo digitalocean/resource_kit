@@ -58,7 +58,3 @@ RSpec.describe ResourceKit::Testing::ActionHandlerMatchers do
     end
   end
 end
-
-__END__
-
-expect(MyResourceClass).to have_action(:all).that_handles(:ok, :no_content).at_path('/users')
