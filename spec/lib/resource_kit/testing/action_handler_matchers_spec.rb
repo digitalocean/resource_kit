@@ -45,15 +45,41 @@ RSpec.describe ResourceKit::Testing::ActionHandlerMatchers do
     subject(:testing_matcher) { described_class.new(:all) }
 
     context 'for a resource that has the defined action' do
-      class DummyActionableResource < ResourceKit::Resource
-        resources { action :all, 'GET /hello' }
-      end
+      let(:resource_class) { Class.new(ResourceKit::Resource) }
 
-      it 'matches' do
+      it 'matches with both code and path' do
+        resource_class.resources do
+          action :all, 'GET /hello' do
+            handler(200) { }
+          end
+        end
+
         matcher = described_class.new(:all)
         matcher.that_handles(:ok).at_path('/hello')
 
-        expect(matcher.matches?(DummyActionableResource)).to be_truthy
+        expect(matcher.matches?(resource_class)).to be_truthy
+      end
+
+      it 'matches with only code' do
+        resource_class.resources do
+          action :all, 'GET /hello' do
+            handler(200) { }
+          end
+        end
+
+        matcher = described_class.new(:all)
+        matcher.that_handles(:ok)
+
+        expect(matcher.matches?(resource_class)).to be_truthy
+      end
+
+      it 'matches with only path' do
+        resource_class.resources { action :all, 'GET /hello' }
+
+        matcher = described_class.new(:all)
+        matcher.at_path('/hello')
+
+        expect(matcher.matches?(resource_class)).to be_truthy
       end
     end
   end

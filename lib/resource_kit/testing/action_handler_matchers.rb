@@ -23,21 +23,31 @@ module ResourceKit
       def matches?(subject)
         action = subject.resources.find_action(self.action)
         return false unless action
+
+        check_keys(action) && check_path(action)
+      end
+
+      def handler_codes
+        @handler_codes ||= []
+      end
+
+      private
+
+      def check_keys(action)
         keys = action.handlers.keys
 
-        if !keys.empty? && !handler_codes.empty?
+        if !handler_codes.empty?
           handler_codes.each do |handler_code|
             return false unless keys.include?(handler_code)
           end
         end
 
-        return false if self.path && action.path != self.path
-
         true
       end
 
-      def handler_codes
-        @handler_codes ||= []
+      def check_path(action)
+        return true unless self.path
+        self.path && action.path == self.path
       end
     end
   end
