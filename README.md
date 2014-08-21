@@ -90,6 +90,10 @@ create = resource.create(Droplet.new)
 
 ResourceKit supplys test helpers that assist in certain things you'd want your resource classes to do.
 
+Make sure you:
+
+    require 'resource_kit/testing'
+
 Testing a certain action:
 
 ```ruby
