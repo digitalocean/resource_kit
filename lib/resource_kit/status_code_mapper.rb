@@ -53,7 +53,7 @@ module ResourceKit
     }
 
     def self.code_for(symbol)
-      MAP[symbol]
+      MAP[symbol] || symbol
     end
   end
 end

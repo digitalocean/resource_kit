@@ -86,6 +86,26 @@ single_droplet = resource.find(id: 123)
 create = resource.create(Droplet.new)
 ```
 
+## Test Helpers
+
+ResourceKit supplys test helpers that assist in certain things you'd want your resource classes to do.
+
+Testing a certain action:
+
+```ruby
+RSpec.describe MyResourceClass do
+  it 'has an all action' do
+    expect(MyResourceClass).to have_action(:all).that_handles(:ok, :no_content).at_path('/users')
+  end
+
+  it 'handles a 201 with response body' do
+    expect(MyResourceClass).to handle_response(:create).with(status: 201, body: '{"users":[]}') do |handled|
+      expect(handled).to all(be_kind_of(User))
+    end
+  end
+end
+```
+
 ### Nice to have's
 
 Things we've thought about but just haven't implemented are:
