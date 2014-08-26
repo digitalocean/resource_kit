@@ -41,5 +41,22 @@ module ResourceKit
       @body_handler = block if block_given?
       @body_handler
     end
+
+    def hooks
+      @hooks ||= {}
+    end
+
+    def before_request(method_name = nil, &block)
+      hooks[:before] ||= []
+
+      if block_given?
+        hooks[:before] << block
+      else
+        raise "Must include a method name" unless method_name
+        hooks[:before] << method_name
+      end
+
+      nil
+    end
   end
 end

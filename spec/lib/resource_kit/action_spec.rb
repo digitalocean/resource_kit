@@ -59,4 +59,21 @@ RSpec.describe ResourceKit::Action do
       expect(action.query_keys).to include(:per_page, :page)
     end
   end
+
+  describe '#before_request' do
+    context 'with a block' do
+      it 'sets a block to happen before the request happens' do
+        proc = Proc.new {}
+        action.before_request(&proc)
+        expect(action.hooks[:before]).to include(proc)
+      end
+    end
+
+    context 'with a symbol' do
+      it 'adds the symbol to the before hooks' do
+        action.before_request(:foo)
+        expect(action.hooks[:before]).to include(:foo)
+      end
+    end
+  end
 end
