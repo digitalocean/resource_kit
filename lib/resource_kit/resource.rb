@@ -10,9 +10,12 @@ module ResourceKit
 
     def self.resources(&block)
       self._resources ||= ResourceCollection.new
-      self._resources.instance_eval(&block) if block_given?
 
-      MethodFactory.construct(self, self._resources)
+      if block_given?
+        self._resources.instance_eval(&block)
+        MethodFactory.construct(self, self._resources)
+      end
+
       self._resources
     end
 
