@@ -2,6 +2,8 @@ module ResourceKit
   class ActionInvoker
     attr_reader :action, :connection, :args, :options
 
+    attr_accessor :context
+
     def initialize(action, connection, *args)
       @action = action
       @connection = connection
@@ -30,18 +32,23 @@ module ResourceKit
 
       raise ArgumentError, "Verb '#{action.verb}' is not allowed" unless action.verb.in?(ALLOWED_VERBS)
 
-      if action.body and action.verb.in?([:post, :put, :patch])
-        # This request is going to have a response body. Handle it.
-        @response = connection.send(action.verb, resolver.resolve(options)) do |request|
-          request.body = construct_body
-        end
-      else
-        @response = connection.send(action.verb, resolver.resolve(options))
+      @response = connection.send(action.verb, resolver.resolve(options)) do |request|
+        request.body = construct_body if action.body and action.verb.in?([:post, :put, :patch])
+        append_hooks(:before, request)
       end
     end
 
     def resolver
       EndpointResolver.new(path: action.path, query_param_keys: action.query_keys)
+    end
+
+    private
+
+    def append_hooks(hook_type, request)
+      (action.hooks[hook_type] || []).each do |hook|
+        hook.call(request) and next if hook.kind_of?(Proc)
+        context.send(hook, request)
+      end
     end
   end
 end

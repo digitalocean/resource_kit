@@ -9,6 +9,7 @@ RSpec.describe ResourceKit::ActionInvoker do
       stub.get('/users/12') { |env| [200, {}, 'user 12'] }
       stub.post('/users') { |env| [200, {}, env[:body]] }
       stub.get('/paged') { |env| [200, {}, env[:url].to_s] }
+      stub.get('/before_hooks') { |env| [200, {}, env[:request_headers]['Owner-Id']] }
     end
   end
   let(:action) { ResourceKit::Action.new(:find) }
@@ -81,6 +82,36 @@ RSpec.describe ResourceKit::ActionInvoker do
         addressed = Addressable::URI.parse(result)
 
         expect(addressed.query_values).to include('per_page' => '300', 'page' => '3')
+      end
+    end
+
+    context 'for actions that have before request hooks' do
+      it 'calls the before request with the request object' do
+        action.path '/before_hooks'
+        action.verb :get
+        action.before_request {|req| req.headers['Owner-Id'] = 'bojangles' }
+
+        result = ResourceKit::ActionInvoker.call(action, connection)
+        expect(result).to eq('bojangles')
+      end
+
+      context 'for passing a symbol' do
+        it 'calls the method on the context of the action' do
+          instance = Class.new do
+            def kickit(request)
+              request.headers['Owner-Id'] = 'btabes'
+            end
+          end.new
+
+          action.path '/before_hooks'
+          action.verb :get
+          action.before_request(:kickit)
+
+          invoker = ResourceKit::ActionInvoker.new(action, connection)
+          invoker.context = instance
+
+          expect(invoker.handle_response).to eq('btabes')
+        end
       end
     end
   end
