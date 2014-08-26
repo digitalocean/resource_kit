@@ -16,7 +16,8 @@ module ResourceKit
         self
       end
 
-      def matches?(subject)
+      def matches?(subject, &block)
+        @handled_block ||= block
         action = subject.resources.find_action(self.action)
         return false unless action
 
