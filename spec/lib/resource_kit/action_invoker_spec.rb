@@ -112,6 +112,23 @@ RSpec.describe ResourceKit::ActionInvoker do
 
           expect(invoker.handle_response).to eq('btabes')
         end
+
+        it 'calls the action with arguments passed' do
+          instance = Class.new do
+            def kickit(one, two, request)
+              request.headers['Owner-Id'] = "#{one} #{two}"
+            end
+          end.new
+
+          action.path '/before_hooks'
+          action.verb :get
+          action.before_request(:kickit)
+
+          invoker = ResourceKit::ActionInvoker.new(action, connection, 'bobby', 'tables')
+          invoker.context = instance
+
+          expect(invoker.handle_response).to eq('bobby tables')
+        end
       end
     end
   end
