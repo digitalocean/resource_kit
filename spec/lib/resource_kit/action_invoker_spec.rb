@@ -95,6 +95,15 @@ RSpec.describe ResourceKit::ActionInvoker do
         expect(result).to eq('bojangles')
       end
 
+      it 'calls the before request with the request object and arguments' do
+        action.path '/before_hooks'
+        action.verb :get
+        action.before_request {|one, two, req| req.headers['Owner-Id'] = "#{one} #{two}" }
+
+        result = ResourceKit::ActionInvoker.call(action, connection, 'one', 'two')
+        expect(result).to eq('one two')
+      end
+
       context 'for passing a symbol' do
         it 'calls the method on the context of the action' do
           instance = Class.new do

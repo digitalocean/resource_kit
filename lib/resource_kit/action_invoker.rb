@@ -46,7 +46,7 @@ module ResourceKit
 
     def append_hooks(hook_type, request)
       (action.hooks[hook_type] || []).each do |hook|
-        hook.call(request) and next if hook.kind_of?(Proc)
+        hook.call(*args, request) and next if hook.kind_of?(Proc)
         context.send(hook, *args, request)
       end
     end
