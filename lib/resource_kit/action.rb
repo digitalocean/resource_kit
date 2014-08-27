@@ -14,8 +14,10 @@ module ResourceKit
       @verb
     end
 
-    def path(path = nil)
+    def path(path = nil, &block)
+      raise "You must pass either a block or a string for paths" if path and block_given?
       @path = path if path
+      @path = block if block_given?
       @path
     end
 
@@ -40,6 +42,23 @@ module ResourceKit
     def body(&block)
       @body_handler = block if block_given?
       @body_handler
+    end
+
+    def hooks
+      @hooks ||= {}
+    end
+
+    def before_request(method_name = nil, &block)
+      hooks[:before] ||= []
+
+      if block_given?
+        hooks[:before] << block
+      else
+        raise "Must include a method name" unless method_name
+        hooks[:before] << method_name
+      end
+
+      nil
     end
   end
 end

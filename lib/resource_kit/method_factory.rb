@@ -13,7 +13,7 @@ module ResourceKit
 
     def self.method_for_action(action, invoker)
       Proc.new do |*args|
-        invoker.call(action, connection, *args)
+        invoker.call(action, self, *args)
       end
     end
   end

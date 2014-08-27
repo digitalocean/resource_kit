@@ -1,21 +1,22 @@
 module ResourceKit
   class ActionInvoker
-    attr_reader :action, :connection, :args, :options
+    attr_reader :action, :connection, :args, :options, :resource
 
-    def initialize(action, connection, *args)
+    def initialize(action, resource, *args)
       @action = action
-      @connection = connection
+      @resource = resource
+      @connection = resource.connection
       @args = args
       @options = args.last.kind_of?(Hash) ? args.last : {}
     end
 
-    def self.call(action, connection, *args)
-      new(action, connection, *args).handle_response
+    def self.call(action, resource, *args)
+      new(action, resource, *args).handle_response
     end
 
     def handle_response
       if handler = action.handlers[response.status]
-        handler.call(response)
+        resource.instance_exec(response, &handler)
       else
         response.body
       end
@@ -30,18 +31,28 @@ module ResourceKit
 
       raise ArgumentError, "Verb '#{action.verb}' is not allowed" unless action.verb.in?(ALLOWED_VERBS)
 
-      if action.body and action.verb.in?([:post, :put, :patch])
-        # This request is going to have a response body. Handle it.
-        @response = connection.send(action.verb, resolver.resolve(options)) do |request|
-          request.body = construct_body
-        end
-      else
-        @response = connection.send(action.verb, resolver.resolve(options))
+      @response = connection.send(action.verb, resolver.resolve(options)) do |request|
+        request.body = construct_body if action.body and action.verb.in?([:post, :put, :patch])
+        append_hooks(:before, request)
       end
     end
 
     def resolver
-      EndpointResolver.new(path: action.path, query_param_keys: action.query_keys)
+      path = action.path.kind_of?(Proc) ? resource.instance_eval(&action.path) : action.path
+      EndpointResolver.new(path: path, query_param_keys: action.query_keys)
+    end
+
+    private
+
+    def append_hooks(hook_type, request)
+      (action.hooks[hook_type] || []).each do |hook|
+        case hook
+        when Proc
+          resource.instance_exec(*args, request, &hook)
+        when Symbol
+          resource.send(hook, *args, request)
+        end
+      end
     end
   end
 end

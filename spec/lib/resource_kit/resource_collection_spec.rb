@@ -5,7 +5,7 @@ RSpec.describe ResourceKit::ResourceCollection do
 
   describe '#default_handler' do
     it 'adds the passed black to a hash of handlers on the resource collection' do
-      handler_block = Proc.new {|b| 'whut whut' }
+      handler_block = Proc.new { |b| 'whut whut' }
       collection.default_handler(:ok, :no_content, &handler_block)
 
       expect(collection.default_handlers[200]).to eq(handler_block)
@@ -15,7 +15,7 @@ RSpec.describe ResourceKit::ResourceCollection do
 
   describe '#action' do
     it 'yields an action to the block' do
-      expect {|b| collection.action(:all, &b) }.to yield_with_args(instance_of(ResourceKit::Action))
+      expect { |b| collection.action(:all, &b) }.to yield_with_args(instance_of(ResourceKit::Action))
     end
 
     it 'adds the action to the collection' do
@@ -31,7 +31,7 @@ RSpec.describe ResourceKit::ResourceCollection do
     end
 
     context 'when default handlers have been specified on the collection' do
-      let(:handler) { Proc.new {|response| 'sure' } }
+      let(:handler) { Proc.new { |response| 'sure' } }
 
       before { collection.default_handler(:ok, &handler) }
 

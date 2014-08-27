@@ -24,6 +24,14 @@ RSpec.describe ResourceKit::Action do
       action.path '/something/sammy'
       expect(action.path).to eq('/something/sammy')
     end
+
+    it 'sets the path to a block when passed' do
+      action = described_class.new(:find)
+      proc = Proc.new { '/users/:id/comments' }
+      action.path(&proc)
+
+      expect(action.path).to be(proc)
+    end
   end
 
   describe '#handler' do
@@ -46,7 +54,7 @@ RSpec.describe ResourceKit::Action do
 
   describe '#body' do
     it 'stores a proc for handling requests with bodies' do
-      handler = Proc.new {|object| 'whut whut' }
+      handler = Proc.new { |object| 'whut whut' }
       action.body(&handler)
 
       expect(action.body).to be(handler)
@@ -57,6 +65,23 @@ RSpec.describe ResourceKit::Action do
     it 'allows setting known query parameters that we should append to the URL' do
       action.query_keys :per_page, :page
       expect(action.query_keys).to include(:per_page, :page)
+    end
+  end
+
+  describe '#before_request' do
+    context 'with a block' do
+      it 'sets a block to happen before the request happens' do
+        proc = Proc.new {}
+        action.before_request(&proc)
+        expect(action.hooks[:before]).to include(proc)
+      end
+    end
+
+    context 'with a symbol' do
+      it 'adds the symbol to the before hooks' do
+        action.before_request(:foo)
+        expect(action.hooks[:before]).to include(:foo)
+      end
     end
   end
 end
