@@ -1,23 +1,22 @@
 module ResourceKit
   class ActionInvoker
-    attr_reader :action, :connection, :args, :options
+    attr_reader :action, :connection, :args, :options, :resource
 
-    attr_accessor :context
-
-    def initialize(action, connection, *args)
+    def initialize(action, resource, *args)
       @action = action
-      @connection = connection
+      @resource = resource
+      @connection = resource.connection
       @args = args
       @options = args.last.kind_of?(Hash) ? args.last : {}
     end
 
-    def self.call(action, connection, *args)
-      new(action, connection, *args).handle_response
+    def self.call(action, resource, *args)
+      new(action, resource, *args).handle_response
     end
 
     def handle_response
       if handler = action.handlers[response.status]
-        context.instance_exec(response, &handler)
+        resource.instance_exec(response, &handler)
       else
         response.body
       end
@@ -39,7 +38,7 @@ module ResourceKit
     end
 
     def resolver
-      path = action.path.kind_of?(Proc) ? context.instance_eval(&action.path) : action.path
+      path = action.path.kind_of?(Proc) ? resource.instance_eval(&action.path) : action.path
       EndpointResolver.new(path: path, query_param_keys: action.query_keys)
     end
 
@@ -49,9 +48,9 @@ module ResourceKit
       (action.hooks[hook_type] || []).each do |hook|
         case hook
         when Proc
-          context.instance_exec(*args, request, &hook)
+          resource.instance_exec(*args, request, &hook)
         when Symbol
-          context.send(hook, *args, request)
+          resource.send(hook, *args, request)
         end
       end
     end

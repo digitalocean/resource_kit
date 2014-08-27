@@ -14,20 +14,21 @@ RSpec.describe ResourceKit::ActionInvoker do
     end
   end
   let(:action) { ResourceKit::Action.new(:find) }
+  let(:resource) { double('resource instance', connection: connection) }
 
   describe '.call' do
     it 'performs a request to the specfied URL' do
       action.verb :get
       action.path '/users'
 
-      result = ResourceKit::ActionInvoker.call(action, connection)
+      result = ResourceKit::ActionInvoker.call(action, resource)
 
       expect(result).to eq('all users')
     end
 
     it 'performs a request to the correct url when using a block for path' do
       action.path { '/block_based' }
-      result = ResourceKit::ActionInvoker.call(action, connection)
+      result = ResourceKit::ActionInvoker.call(action, resource)
 
       expect(result).to eq('block based path')
     end
@@ -36,7 +37,7 @@ RSpec.describe ResourceKit::ActionInvoker do
       action.verb :get
       action.path '/users/:id'
 
-      result = ResourceKit::ActionInvoker.call(action, connection, id: 12)
+      result = ResourceKit::ActionInvoker.call(action, resource, id: 12)
       expect(result).to eq('user 12')
     end
 
@@ -46,7 +47,7 @@ RSpec.describe ResourceKit::ActionInvoker do
         action.path '/users'
         action.handler(200) {|response| 'changed' }
 
-        result = ResourceKit::ActionInvoker.call(action, connection)
+        result = ResourceKit::ActionInvoker.call(action, resource)
 
         expect(result).to eq('changed')
       end
@@ -56,7 +57,7 @@ RSpec.describe ResourceKit::ActionInvoker do
         action.path '/users/bad_page'
         action.handler(404) {|response| '404ed' }
 
-        result = ResourceKit::ActionInvoker.call(action, connection)
+        result = ResourceKit::ActionInvoker.call(action, resource)
         expect(result).to eq('404ed')
       end
     end
@@ -67,7 +68,7 @@ RSpec.describe ResourceKit::ActionInvoker do
         action.path '/users'
         action.body {|object| 'i am a banana' }
 
-        result = ResourceKit::ActionInvoker.call(action, connection, 'echo me')
+        result = ResourceKit::ActionInvoker.call(action, resource, 'echo me')
         expect(result).to eq('i am a banana')
       end
 
@@ -76,7 +77,7 @@ RSpec.describe ResourceKit::ActionInvoker do
         action.path '/users'
         action.body {|first, second| first + second }
 
-        result = ResourceKit::ActionInvoker.call(action, connection, 'echo me', ' another')
+        result = ResourceKit::ActionInvoker.call(action, resource, 'echo me', ' another')
         expect(result).to eq('echo me another')
       end
     end
@@ -86,7 +87,7 @@ RSpec.describe ResourceKit::ActionInvoker do
         action.query_keys :per_page, :page
         action.path '/paged'
 
-        result = ResourceKit::ActionInvoker.call(action, connection, page: 3, per_page: 300)
+        result = ResourceKit::ActionInvoker.call(action, resource, page: 3, per_page: 300)
         addressed = Addressable::URI.parse(result)
 
         expect(addressed.query_values).to include('per_page' => '300', 'page' => '3')
@@ -99,7 +100,7 @@ RSpec.describe ResourceKit::ActionInvoker do
         action.verb :get
         action.before_request {|req| req.headers['Owner-Id'] = 'bojangles' }
 
-        result = ResourceKit::ActionInvoker.call(action, connection)
+        result = ResourceKit::ActionInvoker.call(action, resource)
         expect(result).to eq('bojangles')
       end
 
@@ -108,41 +109,35 @@ RSpec.describe ResourceKit::ActionInvoker do
         action.verb :get
         action.before_request {|one, two, req| req.headers['Owner-Id'] = "#{one} #{two}" }
 
-        result = ResourceKit::ActionInvoker.call(action, connection, 'one', 'two')
+        result = ResourceKit::ActionInvoker.call(action, resource, 'one', 'two')
         expect(result).to eq('one two')
       end
 
       context 'for passing a symbol' do
         it 'calls the method on the context of the action' do
-          instance = Class.new do
-            def kickit(request)
-              request.headers['Owner-Id'] = 'btabes'
-            end
-          end.new
+          def resource.kickit(request)
+            request.headers['Owner-Id'] = 'btabes'
+          end
 
           action.path '/before_hooks'
           action.verb :get
           action.before_request(:kickit)
 
-          invoker = ResourceKit::ActionInvoker.new(action, connection)
-          invoker.context = instance
+          invoker = ResourceKit::ActionInvoker.new(action, resource)
 
           expect(invoker.handle_response).to eq('btabes')
         end
 
         it 'calls the action with arguments passed' do
-          instance = Class.new do
-            def kickit(one, two, request)
-              request.headers['Owner-Id'] = "#{one} #{two}"
-            end
-          end.new
+          def resource.kickit(one, two, request)
+            request.headers['Owner-Id'] = "#{one} #{two}"
+          end
 
           action.path '/before_hooks'
           action.verb :get
           action.before_request(:kickit)
 
-          invoker = ResourceKit::ActionInvoker.new(action, connection, 'bobby', 'tables')
-          invoker.context = instance
+          invoker = ResourceKit::ActionInvoker.new(action, resource, 'bobby', 'tables')
 
           expect(invoker.handle_response).to eq('bobby tables')
         end

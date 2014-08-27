@@ -44,7 +44,7 @@ RSpec.describe ResourceKit::MethodFactory do
       instance = klass.new
       instance.connection = double('connection')
       instance.bunk('something', 'something else')
-      expect(invoker).to have_received(:call).with(action, instance.connection, 'something', 'something else')
+      expect(invoker).to have_received(:call).with(action, instance, 'something', 'something else')
     end
   end
 end
