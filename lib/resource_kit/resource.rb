@@ -2,10 +2,11 @@ module ResourceKit
   class Resource
     class_attribute :_resources
 
-    attr_reader :connection
+    attr_reader :connection, :scope
 
-    def initialize(connection)
+    def initialize(connection, scope = nil)
       @connection = connection
+      @scope = scope
     end
 
     def self.resources(&block)

@@ -35,6 +35,16 @@ RSpec.describe ResourceKit::Resource do
 
       expect(instance.connection).to be(faraday)
     end
+
+    it 'initializes with an optional scope object' do
+      connection = double('conn')
+      scope = double('scope')
+
+      instance = ResourceKit::Resource.new(connection, scope)
+
+      expect(instance.connection).to be(connection)
+      expect(instance.scope).to be(scope)
+    end
   end
 
   describe '#action' do
