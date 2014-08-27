@@ -3,11 +3,11 @@ require 'spec_helper'
 class DummyResourceActions < ResourceKit::Resource
   resources do
     action :dummy, 'GET /dummy' do
-      handler(200) {|resp| resp.body.upcase }
+      handler(200) { |resp| resp.body.upcase }
     end
 
     action :headered, 'GET /headered' do
-      before_request {|req| req.headers['Added-Header'] = self.value }
+      before_request { |req| req.headers['Added-Header'] = self.value }
     end
   end
 
@@ -17,7 +17,7 @@ class DummyResourceActions < ResourceKit::Resource
 end
 
 RSpec.describe 'Resource Actions' do
-  let(:connection) { Faraday.new {|b| b.adapter :test, stubs } }
+  let(:connection) { Faraday.new { |b| b.adapter :test, stubs } }
   let(:scoped) { double('scope', value: 'bunk') }
   let(:stubs) do
     Faraday::Adapter::Test::Stubs.new do |stub|

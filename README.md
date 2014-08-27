@@ -31,26 +31,26 @@ When you're able to answer these questions, you can describe them in your resour
 ```ruby
 class DropletResource < ResourceKit::Resource
   resources do
-    default_handler(422) {|response| ErrorMapping.extract_single(response.body, :read) }
-    default_handler(:ok, :created) {|response| DropletMapping.extract_single(response.body, :read) }
+    default_handler(422) { |response| ErrorMapping.extract_single(response.body, :read) }
+    default_handler(:ok, :created) { |response| DropletMapping.extract_single(response.body, :read) }
 
     # Defining actions will create instance methods on the resource class to call them.
     action :find do
       verb :get # get is assumed if this is omitted
       path '/droplets/:id'
-      handler(200) {|response| DropletMapping.extract_single(response.body, :read) }
+      handler(200) { |response| DropletMapping.extract_single(response.body, :read) }
     end
 
     action :all do
       path '/droplets'
-      handler(200) {|body| DropletMapping.extract_collection(body, :read) }
+      handler(200) { |body| DropletMapping.extract_collection(body, :read) }
     end
 
     action :create do
       path '/droplets'
       verb :post
-      body {|object| DropletMapping.representation_for(:create, object) } # Generate a response body from a passed object
-      handler(202) {|response| DropletMapping.extract_single(response.body, :read) }
+      body { |object| DropletMapping.representation_for(:create, object) } # Generate a response body from a passed object
+      handler(202) { |response| DropletMapping.extract_single(response.body, :read) }
     end
   end
 end
@@ -97,7 +97,7 @@ class CommentResource < ResourceKit::Resource
   resources do
     action :all do
       path { "/users/#{user_id}/comments" }
-      handler(200) {|resp| CommentMapping.extract_collection(resp.body, :read) }
+      handler(200) { |resp| CommentMapping.extract_collection(resp.body, :read) }
     end
   end
 

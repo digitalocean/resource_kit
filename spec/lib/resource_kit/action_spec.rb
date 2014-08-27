@@ -54,7 +54,7 @@ RSpec.describe ResourceKit::Action do
 
   describe '#body' do
     it 'stores a proc for handling requests with bodies' do
-      handler = Proc.new {|object| 'whut whut' }
+      handler = Proc.new { |object| 'whut whut' }
       action.body(&handler)
 
       expect(action.body).to be(handler)

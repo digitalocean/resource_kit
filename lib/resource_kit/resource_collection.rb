@@ -11,7 +11,7 @@ module ResourceKit
       action = Action.new(name, *parse_verb_and_path(verb_and_path))
       action.handlers.merge!(default_handlers.dup)
       action.instance_eval(&block) if block_given?
-      action.tap {|a| self << a }
+      action.tap { |a| self << a }
     end
 
     def default_handler(*response_codes, &block)

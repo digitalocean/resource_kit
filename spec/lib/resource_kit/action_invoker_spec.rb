@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe ResourceKit::ActionInvoker do
-  let(:connection) { Faraday.new {|b| b.adapter :test, stubs } }
+  let(:connection) { Faraday.new { |b| b.adapter :test, stubs } }
   let(:stubs) do
     Faraday::Adapter::Test::Stubs.new do |stub|
       stub.get('/users') { |env| [200, {}, 'all users'] }
@@ -45,7 +45,7 @@ RSpec.describe ResourceKit::ActionInvoker do
       it 'returns the handler block' do
         action.verb :get
         action.path '/users'
-        action.handler(200) {|response| 'changed' }
+        action.handler(200) { |response| 'changed' }
 
         result = ResourceKit::ActionInvoker.call(action, resource)
 
@@ -55,7 +55,7 @@ RSpec.describe ResourceKit::ActionInvoker do
       it 'uses the correct handler on status codes' do
         action.verb :get
         action.path '/users/bad_page'
-        action.handler(404) {|response| '404ed' }
+        action.handler(404) { |response| '404ed' }
 
         result = ResourceKit::ActionInvoker.call(action, resource)
         expect(result).to eq('404ed')
@@ -66,7 +66,7 @@ RSpec.describe ResourceKit::ActionInvoker do
       it 'uses the body handler when present' do
         action.verb :post
         action.path '/users'
-        action.body {|object| 'i am a banana' }
+        action.body { |object| 'i am a banana' }
 
         result = ResourceKit::ActionInvoker.call(action, resource, 'echo me')
         expect(result).to eq('i am a banana')
@@ -75,7 +75,7 @@ RSpec.describe ResourceKit::ActionInvoker do
       it 'uses the body handler with multiple arity when present' do
         action.verb :post
         action.path '/users'
-        action.body {|first, second| first + second }
+        action.body { |first, second| first + second }
 
         result = ResourceKit::ActionInvoker.call(action, resource, 'echo me', ' another')
         expect(result).to eq('echo me another')
@@ -98,7 +98,7 @@ RSpec.describe ResourceKit::ActionInvoker do
       it 'calls the before request with the request object' do
         action.path '/before_hooks'
         action.verb :get
-        action.before_request {|req| req.headers['Owner-Id'] = 'bojangles' }
+        action.before_request { |req| req.headers['Owner-Id'] = 'bojangles' }
 
         result = ResourceKit::ActionInvoker.call(action, resource)
         expect(result).to eq('bojangles')
@@ -107,7 +107,7 @@ RSpec.describe ResourceKit::ActionInvoker do
       it 'calls the before request with the request object and arguments' do
         action.path '/before_hooks'
         action.verb :get
-        action.before_request {|one, two, req| req.headers['Owner-Id'] = "#{one} #{two}" }
+        action.before_request { |one, two, req| req.headers['Owner-Id'] = "#{one} #{two}" }
 
         result = ResourceKit::ActionInvoker.call(action, resource, 'one', 'two')
         expect(result).to eq('one two')
