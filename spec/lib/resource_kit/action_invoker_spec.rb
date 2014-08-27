@@ -10,6 +10,7 @@ RSpec.describe ResourceKit::ActionInvoker do
       stub.post('/users') { |env| [200, {}, env[:body]] }
       stub.get('/paged') { |env| [200, {}, env[:url].to_s] }
       stub.get('/before_hooks') { |env| [200, {}, env[:request_headers]['Owner-Id']] }
+      stub.get('/block_based') { |env| [200, {}, 'block based path'] }
     end
   end
   let(:action) { ResourceKit::Action.new(:find) }
@@ -22,6 +23,13 @@ RSpec.describe ResourceKit::ActionInvoker do
       result = ResourceKit::ActionInvoker.call(action, connection)
 
       expect(result).to eq('all users')
+    end
+
+    it 'performs a request to the correct url when using a block for path' do
+      action.path { '/block_based' }
+      result = ResourceKit::ActionInvoker.call(action, connection)
+
+      expect(result).to eq('block based path')
     end
 
     it 'substitues params on call' do

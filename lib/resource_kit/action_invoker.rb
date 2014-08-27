@@ -39,15 +39,20 @@ module ResourceKit
     end
 
     def resolver
-      EndpointResolver.new(path: action.path, query_param_keys: action.query_keys)
+      path = action.path.kind_of?(Proc) ? context.instance_eval(&action.path) : action.path
+      EndpointResolver.new(path: path, query_param_keys: action.query_keys)
     end
 
     private
 
     def append_hooks(hook_type, request)
       (action.hooks[hook_type] || []).each do |hook|
-        context.instance_exec(*args, request, &hook) and next if hook.kind_of?(Proc)
-        context.send(hook, *args, request)
+        case hook
+        when Proc
+          context.instance_exec(*args, request, &hook)
+        when Symbol
+          context.send(hook, *args, request)
+        end
       end
     end
   end
