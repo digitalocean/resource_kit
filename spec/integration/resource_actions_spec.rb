@@ -27,13 +27,13 @@ RSpec.describe 'Resource Actions' do
   end
 
   it 'Retrieving /dummy returns the body as uppercased' do
-    resource = DummyResourceActions.new(connection, scoped)
+    resource = DummyResourceActions.new(connection: connection, scope: scoped)
     response = resource.dummy
     expect(response).to eq('DUMMIES')
   end
 
   it 'adds the header before the request happens' do
-    resource = DummyResourceActions.new(connection, scoped)
+    resource = DummyResourceActions.new(connection: connection, scope: scoped)
     response = resource.headered
 
     expect(response).to eq(scoped.value)

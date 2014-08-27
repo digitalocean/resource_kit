@@ -20,7 +20,7 @@ RSpec.describe ResourceKit::Resource do
         end
       end
 
-      subject(:droplet_resource) { DropletResource.new(double) }
+      subject(:droplet_resource) { DropletResource.new }
 
       it "defines the action method" do
         expect(droplet_resource).to respond_to(:find)
@@ -31,7 +31,7 @@ RSpec.describe ResourceKit::Resource do
   describe '#initialize' do
     it 'initializes with a connection' do
       faraday = Faraday.new(url: 'http://lol.com')
-      instance = ResourceKit::Resource.new(faraday)
+      instance = ResourceKit::Resource.new(connection: faraday)
 
       expect(instance.connection).to be(faraday)
     end
@@ -40,7 +40,7 @@ RSpec.describe ResourceKit::Resource do
       connection = double('conn')
       scope = double('scope')
 
-      instance = ResourceKit::Resource.new(connection, scope)
+      instance = ResourceKit::Resource.new(connection: connection, scope: scope)
 
       expect(instance.connection).to be(connection)
       expect(instance.scope).to be(scope)
@@ -57,7 +57,7 @@ RSpec.describe ResourceKit::Resource do
         end
       end
 
-      instance = DummyResource.new(faraday)
+      instance = DummyResource.new(connection: faraday)
 
       expect(instance.action(:find)).to be_kind_of(ResourceKit::Action)
     end

@@ -4,7 +4,7 @@ module ResourceKit
 
     attr_reader :connection, :scope
 
-    def initialize(connection, scope = nil)
+    def initialize(connection: nil, scope: nil)
       @connection = connection
       @scope = scope
     end
