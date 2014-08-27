@@ -14,8 +14,10 @@ module ResourceKit
       @verb
     end
 
-    def path(path = nil)
+    def path(path = nil, &block)
+      raise "You must pass either a block or a string for paths" if path and block_given?
       @path = path if path
+      @path = block if block_given?
       @path
     end
 

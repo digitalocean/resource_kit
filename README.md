@@ -86,6 +86,23 @@ single_droplet = resource.find(id: 123)
 create = resource.create(Droplet.new)
 ```
 
+## Scope
+
+ResourceKit classes give you the option to pass in an optional scope object, so that you may interact with the resource with it that way.
+
+For example, you may want to use this for nested resources:
+
+```ruby
+class CommentResource < ResourceKit::Resource
+  resources do
+    action :all do
+      path { "/users/#{user_id}/comments" }
+      handler(200) {|resp| CommentMapping.extract_collection(resp.body, :read) }
+    end
+  end
+end
+```
+
 ## Test Helpers
 
 ResourceKit supplys test helpers that assist in certain things you'd want your resource classes to do.
@@ -97,7 +114,8 @@ Make sure you:
 Testing a certain action:
 
 ```ruby
-RSpec.describe MyResourceClass do
+# Tag the spec with resource_kit to bring in the helpers
+RSpec.describe MyResourceClass, resource_kit: true do
   it 'has an all action' do
     expect(MyResourceClass).to have_action(:all).that_handles(:ok, :no_content).at_path('/users')
   end

@@ -24,6 +24,14 @@ RSpec.describe ResourceKit::Action do
       action.path '/something/sammy'
       expect(action.path).to eq('/something/sammy')
     end
+
+    it 'sets the path to a block when passed' do
+      action = described_class.new(:find)
+      proc = Proc.new { '/users/:id/comments' }
+      action.path(&proc)
+
+      expect(action.path).to be(proc)
+    end
   end
 
   describe '#handler' do
