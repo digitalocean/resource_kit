@@ -100,7 +100,15 @@ class CommentResource < ResourceKit::Resource
       handler(200) {|resp| CommentMapping.extract_collection(resp.body, :read) }
     end
   end
+
+  def user_id
+    scope.user_id
+  end
 end
+
+user = User.find(123)
+resource = CommentResource.new(connection, user)
+comments = resource.all #=> Will fetch from /users/123/comments
 ```
 
 ## Test Helpers
