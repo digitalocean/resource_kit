@@ -71,11 +71,11 @@ end
 Now that we've described our resources. We can instantiate our class with a connection object. ResourceKit relies on the interface that Faraday provides. For example:
 
 ```ruby
-connection = Faraday.new(url: 'http://api.digitalocean.com') do |req|
+conn = Faraday.new(url: 'http://api.digitalocean.com') do |req|
   req.adapter :net_http
 end
 
-resource = DropletResource.new(connection)
+resource = DropletResource.new(connection: conn)
 ```
 
 Now that we've instantiated a resource with our class, we can call the actions we've defined on it.
@@ -107,7 +107,7 @@ class CommentResource < ResourceKit::Resource
 end
 
 user = User.find(123)
-resource = CommentResource.new(connection, user)
+resource = CommentResource.new(connection: conn, scope: user)
 comments = resource.all #=> Will fetch from /users/123/comments
 ```
 
