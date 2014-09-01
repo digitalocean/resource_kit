@@ -14,6 +14,12 @@ module ResourceKit
       action.tap { |a| self << a }
     end
 
+    ResourceKit::ALLOWED_VERBS.each do |verb|
+      define_method verb do |name, path = nil, &block|
+        action(name, "#{verb.upcase} #{path}", &block)
+      end
+    end
+
     def default_handler(*response_codes, &block)
       response_codes.each do |code|
         unless code.is_a?(Fixnum)
