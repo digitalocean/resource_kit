@@ -15,7 +15,8 @@ module ResourceKit
     end
 
     ResourceKit::ALLOWED_VERBS.each do |verb|
-      define_method verb do |name, path = nil, &block|
+      define_method verb do |path_name, &block|
+        path, name = path_name.to_a.flatten
         action(name, "#{verb.upcase} #{path}", &block)
       end
     end

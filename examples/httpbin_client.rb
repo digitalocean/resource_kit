@@ -2,8 +2,8 @@ require 'resource_kit'
 
 class HTTPBinResource < ResourceKit::Resource
   resources do
-    get :ip, '/ip'
-    get :status, '/status/:code'
+    get '/ip' => :ip
+    get '/status/:code' => :status
   end
 end
 
