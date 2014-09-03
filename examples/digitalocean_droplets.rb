@@ -43,11 +43,11 @@ class DropletResource < ResourceKit::Resource
 end
 
 token = 'YOUR_ACCESS_TOKEN'
-connection = Faraday.new(url: 'https://api.digitalocean.com', headers: { content_type: 'application/json', authorization: "Bearer #{token}" }) do |req|
+conn = Faraday.new(url: 'https://api.digitalocean.com', headers: { content_type: 'application/json', authorization: "Bearer #{token}" }) do |req|
   req.adapter :net_http
 end
 
-resource = DropletResource.new(connection)
+resource = DropletResource.new(connection: conn)
 
 # Retrieve all droplets
 puts resource.all
