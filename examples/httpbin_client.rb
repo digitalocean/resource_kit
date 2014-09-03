@@ -2,8 +2,6 @@ require 'resource_kit'
 
 class HTTPBinResource < ResourceKit::Resource
   resources do
-    default_handler(:ok) { |response| response.body }
-
     get :ip, '/ip'
     get :status, '/status/:code'
   end
