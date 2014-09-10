@@ -68,6 +68,18 @@ class DropletResource < ResourceKit::Resource
 end
 ```
 
+Instead of using `#action`, you can use any of the supported HTTP verb methods including `#get`, `#post`, `#put`, `#delete`, `#head`, `#patch`, and `#options`. Thus, the above example can be also written as:
+
+```ruby
+class DropletResource < ResourceKit::Resource
+  resources do
+    get :all, '/v2/droplets' do
+      handler(:ok) { |response| DropletMapping.extract_collection(response.body, :read) }
+    end
+  end
+end
+```
+
 Now that we've described our resources. We can instantiate our class with a connection object. ResourceKit relies on the interface that Faraday provides. For example:
 
 ```ruby
