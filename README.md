@@ -33,6 +33,7 @@ class DropletResource < ResourceKit::Resource
   resources do
     default_handler(422) { |response| ErrorMapping.extract_single(response.body, :read) }
     default_handler(:ok, :created) { |response| DropletMapping.extract_single(response.body, :read) }
+    default_handler { |response| raise "Unexpected response status #{response.status}... #{response.body}" }
 
     # Defining actions will create instance methods on the resource class to call them.
     action :find do

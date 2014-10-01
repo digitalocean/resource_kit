@@ -15,7 +15,7 @@ module ResourceKit
     end
 
     def handle_response
-      if handler = action.handlers[response.status]
+      if handler = action.handlers[response.status] || action.handlers[:any]
         resource.instance_exec(response, &handler)
       else
         response.body
