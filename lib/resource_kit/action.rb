@@ -31,11 +31,13 @@ module ResourceKit
     end
 
     def handler(*response_codes, &block)
-      response_codes.each do |code|
-        unless code.is_a?(Fixnum)
-          code = StatusCodeMapper.code_for(code)
+      if response_codes.empty?
+        handlers[:any] = block
+      else
+        response_codes.each do |code|
+          code = StatusCodeMapper.code_for(code) unless code.is_a?(Fixnum)
+          handlers[code] = block
         end
-        handlers[code] = block
       end
     end
 

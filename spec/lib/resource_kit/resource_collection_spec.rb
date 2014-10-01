@@ -11,6 +11,13 @@ RSpec.describe ResourceKit::ResourceCollection do
       expect(collection.default_handlers[200]).to eq(handler_block)
       expect(collection.default_handlers[204]).to eq(handler_block)
     end
+
+    it 'provides a top-level default handler if no status code is provided' do
+      handler_block = Proc.new { true }
+      collection.default_handler(&handler_block)
+
+      expect(collection.default_handlers[:any]).to eq(handler_block)
+    end
   end
 
   describe '#action' do
@@ -32,12 +39,17 @@ RSpec.describe ResourceKit::ResourceCollection do
 
     context 'when default handlers have been specified on the collection' do
       let(:handler) { Proc.new { |response| 'sure' } }
+      let(:default_handler) { Proc.new { 'Something unexpected happened!' } }
 
-      before { collection.default_handler(:ok, &handler) }
+      before do
+        collection.default_handler(:ok, &handler)
+        collection.default_handler(&default_handler)
+      end
 
       it 'prepends the default handlers to the test' do
         action = collection.action(:all)
         expect(action.handlers[200]).to eq(handler)
+        expect(action.handlers[:any]).to eq(default_handler)
       end
     end
   end

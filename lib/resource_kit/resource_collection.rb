@@ -22,11 +22,13 @@ module ResourceKit
     end
 
     def default_handler(*response_codes, &block)
-      response_codes.each do |code|
-        unless code.is_a?(Fixnum)
-          code = StatusCodeMapper.code_for(code)
+      if response_codes.empty?
+        default_handlers[:any] = block
+      else
+        response_codes.each do |code|
+          code = StatusCodeMapper.code_for(code) unless code.is_a?(Fixnum)
+          default_handlers[code] = block
         end
-        default_handlers[code] = block
       end
     end
 

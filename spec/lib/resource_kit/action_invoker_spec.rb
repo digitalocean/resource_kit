@@ -60,6 +60,15 @@ RSpec.describe ResourceKit::ActionInvoker do
         result = ResourceKit::ActionInvoker.call(action, resource)
         expect(result).to eq('404ed')
       end
+
+      it 'uses a default handler if provided' do
+        action.verb :get
+        action.path '/users'
+        action.handler { |response| 'Something unexpected happened.' }
+
+        result = ResourceKit::ActionInvoker.call(action, resource)
+        expect(result).to eq('Something unexpected happened.')
+      end
     end
 
     context 'for requests with bodies' do

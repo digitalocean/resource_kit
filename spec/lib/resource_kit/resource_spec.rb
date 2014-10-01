@@ -24,6 +24,7 @@ RSpec.describe ResourceKit::Resource do
 
       it "defines the action method" do
         expect(droplet_resource).to respond_to(:find)
+        expect(droplet_resource).to respond_to(:all)
       end
     end
   end
