@@ -27,16 +27,18 @@ module ResourceKit
     end
 
     def normalized_path_components(*components)
-      components.reject(&:blank?).map do |piece|
+      components.reject(&:empty?).map do |piece|
         # Remove leading and trailing forward slashes
         piece.gsub(/(^\/)|(\/$)/, '')
       end.join('/').insert(0, '/')
     end
 
     def append_query_values(uri, values)
-      query_param_keys.each_with_object({}) do |key, query_values|
+      params = query_param_keys.each_with_object({}) do |key, query_values|
         query_values[key] = values[key] if values.has_key?(key)
-      end.to_query
+      end
+
+      URI.encode_www_form(params)
     end
   end
 end

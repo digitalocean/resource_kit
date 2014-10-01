@@ -29,10 +29,10 @@ module ResourceKit
     def response
       return @response if @response
 
-      raise ArgumentError, "Verb '#{action.verb}' is not allowed" unless action.verb.in?(ALLOWED_VERBS)
+      raise ArgumentError, "Verb '#{action.verb}' is not allowed" unless ALLOWED_VERBS.include?(action.verb)
 
       @response = connection.send(action.verb, resolver.resolve(options)) do |request|
-        request.body = construct_body if action.body and action.verb.in?([:post, :put, :patch])
+        request.body = construct_body if action.body and [:post, :put, :patch].include?(action.verb)
         append_hooks(:before, request)
       end
     end
