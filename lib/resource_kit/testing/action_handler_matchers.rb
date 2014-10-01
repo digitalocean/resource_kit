@@ -1,3 +1,5 @@
+require 'ostruct'
+
 module ResourceKit
   module Testing
     class ActionHandlerMatchers

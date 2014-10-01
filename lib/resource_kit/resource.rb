@@ -1,6 +1,9 @@
+require 'resource_kit/inheritable_attribute'
+
 module ResourceKit
   class Resource
-    class_attribute :_resources
+    extend InheritableAttribute
+    inheritable_attr :_resources
 
     attr_reader :connection, :scope
 
@@ -26,6 +29,12 @@ module ResourceKit
 
     def action_and_connection(action_name)
       ActionConnection.new(action(action_name), connection)
+    end
+
+    private
+
+    def _resources
+      self.class._resources
     end
   end
 end

@@ -1,5 +1,4 @@
-require "resource_kit/version"
-require 'active_support/core_ext'
+require 'resource_kit/version'
 require 'faraday'
 
 module ResourceKit
