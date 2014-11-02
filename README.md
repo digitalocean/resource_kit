@@ -149,6 +149,28 @@ RSpec.describe MyResourceClass, resource_kit: true do
 end
 ```
 
+## Default Connection Factory
+
+ResourceKit also allows you to specify a default connection factory. This is useful for when you want to just initialize resources, or enable class methods.
+
+```ruby
+class BaseResource < ResourceKit::Resource
+  resources do
+    default_handler { |resp| raise "Unexpected status code: #{resp.code}" }
+    connection { Faraday.new(url: 'http://example.com') }
+  end
+end
+
+class UsersResource < BaseResource
+  resources do
+    get "/users/info" => :info
+  end
+end
+
+resource = UsersResource.new
+user_info = resource.info
+```
+
 ### Nice to have's
 
 Things we've thought about but just haven't implemented are:
