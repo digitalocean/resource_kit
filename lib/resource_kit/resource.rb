@@ -8,7 +8,7 @@ module ResourceKit
     attr_reader :connection, :scope
 
     def initialize(connection: nil, scope: nil)
-      @connection = connection
+      @connection = connection || _resources.default_connection.call
       @scope = scope
     end
 

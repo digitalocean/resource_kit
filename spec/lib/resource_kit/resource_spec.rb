@@ -46,6 +46,19 @@ RSpec.describe ResourceKit::Resource do
       expect(instance.connection).to be(connection)
       expect(instance.scope).to be(scope)
     end
+
+    context 'with a defaulted connection' do
+      it 'uses the default connection' do
+        klass = Class.new(ResourceKit::Resource) do
+          resources do
+            default_connection { :default_connection }
+          end
+        end
+
+        instance = klass.new
+        expect(instance.connection).to be(:default_connection)
+      end
+    end
   end
 
   describe '#action' do

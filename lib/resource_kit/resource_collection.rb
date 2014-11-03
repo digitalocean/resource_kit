@@ -42,6 +42,11 @@ module ResourceKit
       end
     end
 
+    def default_connection(&connection_block)
+      @default_connection = connection_block if block_given?
+      @default_connection || Proc.new { }
+    end
+
     private
 
     def parse_verb_and_path(verb_and_path)
