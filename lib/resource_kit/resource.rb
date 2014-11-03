@@ -23,6 +23,10 @@ module ResourceKit
       self._resources
     end
 
+    def self.inherited(base)
+      base._resources = resources.dup
+    end
+
     def action(name)
       _resources.find_action(name)
     end

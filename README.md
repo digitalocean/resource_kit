@@ -171,6 +171,27 @@ resource = UsersResource.new
 user_info = resource.info
 ```
 
+## Singleton Methods
+
+In most cases, you don't care about instantiating a class to use it. You just want the class to respond to a singleton method.
+
+ResourceKit allows you to do this by mixing in `ResourceKit::SingletonRequests` into your resource classes. This makes calling methods a little simpler, but requires you setup a default connection in order to work.
+
+```ruby
+class UsersResource < ResourceKit::Resource
+  include ResourceKit::SingletonRequests
+
+  resources do
+    default_handler { |resp| raise "Unexpected status code: #{resp.code}" }
+    connection { Faraday.new(url: 'http://example.com') }
+
+    get '/api/users/:id' => :find
+  end
+end
+
+users_info = UsersResource.find(id: 123)
+```
+
 ### Nice to have's
 
 Things we've thought about but just haven't implemented are:

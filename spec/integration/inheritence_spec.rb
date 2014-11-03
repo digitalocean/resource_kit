@@ -23,4 +23,8 @@ RSpec.describe 'Resource Inheritence' do
   it 'inherits default handlers' do
     expect(DummyChildResource.resources.default_handlers[200]).to_not be_nil
   end
+
+  it 'does not modify the parent resource class' do
+    expect(DummyInheritenceResource.resources.find_action(:inherited)).to be_nil
+  end
 end
