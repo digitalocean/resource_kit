@@ -1,5 +1,4 @@
 require 'resource_kit/version'
-require 'faraday'
 
 module ResourceKit
   ALLOWED_VERBS = [:get, :post, :put, :delete, :head, :patch, :options]
