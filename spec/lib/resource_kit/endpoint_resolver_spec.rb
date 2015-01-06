@@ -41,5 +41,16 @@ RSpec.describe ResourceKit::EndpointResolver do
         expect(uri.query_values).to eq("per_page" => '2', "page" => '3')
       end
     end
+
+    context 'with query parameters already appended' do
+      let(:options) { super().merge(path: '/:something/users?foo=bar', query_param_keys: [:per_page, :page]) }
+
+      it 'appends the query params to the url that already has some' do
+        endpoint = resolver.resolve(something: 'testing', per_page: 2, page: 3)
+
+        uri = Addressable::URI.parse(endpoint)
+        expect(uri.query_values).to eq("foo" => 'bar', "per_page" => '2', "page" => '3')
+      end
+    end
   end
 end

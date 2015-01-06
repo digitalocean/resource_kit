@@ -10,8 +10,9 @@ module ResourceKit
     end
 
     def resolve(values = {})
-      uri = Addressable::URI.new
-      new_path = generated_path(values)
+      uri = Addressable::URI.parse(path)
+      new_path = generated_path(uri.path, values)
+
       uri.path = normalized_path_components(new_path)
       uri.query = append_query_values(uri, values) unless query_param_keys.empty?
 
@@ -20,7 +21,7 @@ module ResourceKit
 
     private
 
-    def generated_path(values)
+    def generated_path(path, values)
       values.inject(path) do |np, (key, value)|
         np.gsub(":#{key}", value.to_s)
       end
@@ -34,7 +35,8 @@ module ResourceKit
     end
 
     def append_query_values(uri, values)
-      params = query_param_keys.each_with_object({}) do |key, query_values|
+      pre_vals = uri.query_values || {}
+      params = query_param_keys.each_with_object(pre_vals) do |key, query_values|
         query_values[key] = values[key] if values.has_key?(key)
       end
 
