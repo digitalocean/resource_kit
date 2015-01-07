@@ -21,8 +21,8 @@ module ResourceKit
 
     private
 
-    def generated_path(path, values)
-      values.inject(path) do |np, (key, value)|
+    def generated_path(supplied_path, values)
+      values.inject(supplied_path) do |np, (key, value)|
         np.gsub(":#{key}", value.to_s)
       end
     end
