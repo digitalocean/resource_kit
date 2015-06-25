@@ -16,7 +16,7 @@ module ResourceKit
 
     def handle_response
       if handler = action.handlers[response.status] || action.handlers[:any]
-        resource.instance_exec(response, &handler)
+        resource.instance_exec(response, *args, &handler) # Since the handler is a block, it does not enforce parameter length checking
       else
         response.body
       end
