@@ -52,6 +52,17 @@ RSpec.describe ResourceKit::ActionInvoker do
         expect(result).to eq('changed')
       end
 
+      it 'passes the initial object' do
+        action.verb :get
+        action.path '/users'
+        action.handler(200) { |response, hash| hash }
+
+        target_hash = Hash.new
+        result = ResourceKit::ActionInvoker.call(action, resource, target_hash)
+
+        expect(result).to be target_hash
+      end
+
       it 'uses the correct handler on status codes' do
         action.verb :get
         action.path '/users/bad_page'

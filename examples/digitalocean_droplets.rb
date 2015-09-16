@@ -39,6 +39,13 @@ class DropletResource < ResourceKit::Resource
       body { |object| DropletMapping.representation_for(:create, object) }
       handler(202) { |response| DropletMapping.extract_single(response.body, :read) }
     end
+
+    action :update do
+      verb :put
+      path '/v2/droplets/123'
+      body { |object| DropletMapping.representation_for(:create, object) }
+      handler(200) { |response, object| DropletMapping.extract_into_object(object, response.body, :read) }
+    end
   end
 end
 
