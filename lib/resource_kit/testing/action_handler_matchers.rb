@@ -5,7 +5,7 @@ module ResourceKit
     class ActionHandlerMatchers
       ResponseStub = Class.new(OpenStruct)
 
-      attr_reader :action, :response_stub
+      attr_reader :action, :response_stub, :failure_message
 
       def initialize(action)
         @action = action
@@ -21,10 +21,16 @@ module ResourceKit
       def matches?(subject, &block)
         @handled_block ||= block
         action = subject.resources.find_action(self.action)
-        return false unless action
+        unless action
+          @failure_message = "expected :#{self.action} to be handled by the class."
+          return false
+        end
 
         status_code = response_stub.status || 200
-        return false unless action.handlers[status_code]
+        unless action.handlers[status_code]
+          @failure_message = "expected the #{status_code} status code to be handled by the class."
+          return false
+        end
 
         handled_response = action.handlers[status_code].call(response_stub)
         @handled_block.call(handled_response)
