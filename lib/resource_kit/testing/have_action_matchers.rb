@@ -44,7 +44,7 @@ module ResourceKit
       def check_keys(action)
         keys = action.handlers.keys
 
-        if !handler_codes.empty?
+        unless handler_codes.empty?
           handler_codes.each do |handler_code|
             return false unless keys.include?(handler_code)
           end
