@@ -105,4 +105,53 @@ RSpec.describe ResourceKit::Testing::HaveActionMatchers do
       end
     end
   end
+
+  describe '#failure_message' do
+    let(:resource_class) {
+      Class.new(ResourceKit::Resource) { |resource|
+        resource.resources {
+          action :all, 'POST valid_path' do
+            handler(201)
+          end
+        }
+      }
+    }
+
+    context 'when the matcher doesnt find the action' do
+      it 'returns "expected class to have action #{action}".' do
+        matcher = described_class.new(:all)
+        expect(matcher.failure_message).to eq('expected class to have action all.')
+      end
+    end
+
+    context 'when the matcher doesnt find the path' do
+      it 'returns "expected #{expected} path, got #{gotten_value} instead".' do
+        matcher = described_class.new(:all)
+        matcher.at_path('invalid_path')
+        matcher.matches?(resource_class)
+
+        expect(matcher.failure_message).to eq('expected invalid_path path, got valid_path instead.')
+      end
+    end
+
+    context 'when the matcher doesnt find the status code' do
+      it 'returns "expected #{expected} status_code, got #{gotten_value} instead".' do
+        matcher = described_class.new(:all)
+        matcher.that_handles(:ok)
+        matcher.matches?(resource_class)
+
+        expect(matcher.failure_message).to eq('expected 200 status_code, got [201] instead.')
+      end
+    end
+
+    context 'when the matcher doesnt find the verb code' do
+      it 'returns "expected #{expected} verb, got #{gotten_value} instead".' do
+        matcher = described_class.new(:all)
+        matcher.with_verb(:get)
+        matcher.matches?(resource_class)
+
+        expect(matcher.failure_message).to eq('expected get verb, got post instead.')
+      end
+    end
+  end
 end
