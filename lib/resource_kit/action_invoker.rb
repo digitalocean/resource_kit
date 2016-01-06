@@ -32,7 +32,7 @@ module ResourceKit
       raise ArgumentError, "Verb '#{action.verb}' is not allowed" unless ALLOWED_VERBS.include?(action.verb)
 
       @response = connection.send(action.verb, resolver.resolve(options)) do |request|
-        request.body = construct_body if action.body and [:post, :put, :patch].include?(action.verb)
+        request.body = construct_body if action.body and [:post, :put, :patch, :delete].include?(action.verb)
         append_hooks(:before, request)
       end
     end
