@@ -22,13 +22,13 @@ module ResourceKit
         @handled_block ||= block
         action = subject.resources.find_action(self.action)
         unless action
-          @failure_message = "expected :#{self.action} to be handled by the class."
+          @failure_message = "expected :#{self.action} to be handled by #{subject.class.name}."
           return false
         end
 
         status_code = response_stub.status || 200
         unless action.handlers[status_code]
-          @failure_message = "expected the #{status_code} status code to be handled by the class."
+          @failure_message = "expected the #{status_code} status code to be handled by #{subject.class.name}."
           return false
         end
 
