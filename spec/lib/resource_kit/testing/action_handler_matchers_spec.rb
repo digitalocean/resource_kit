@@ -40,7 +40,7 @@ RSpec.describe ResourceKit::Testing::ActionHandlerMatchers do
 
   describe '#failure_message' do
     before(:each) do
-      allow(resource_class.class).to receive(:name).and_return("CustomClassName")
+      allow(resource_class).to receive(:name).and_return("CustomClassName")
     end
 
     context "when the matchers doesnt handle the same status code" do
