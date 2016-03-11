@@ -39,8 +39,12 @@ RSpec.describe ResourceKit::Testing::ActionHandlerMatchers do
   end
 
   describe '#failure_message' do
+    before(:each) do
+      allow(resource_class).to receive(:name).and_return("CustomClassName")
+    end
+
     context "when the matchers doesnt handle the same status code" do
-      it 'returns "expected the #{status_code} status code to be handled by the class."' do
+      it 'returns "expected the #{status_code} status code to be handled by CustomClassName."' do
         resource_class.resources.action :all, 'GET /all' do
           handler(200) { |response| JSON.load(response.body) }
         end
@@ -48,12 +52,12 @@ RSpec.describe ResourceKit::Testing::ActionHandlerMatchers do
         matcher.with(status: 201, body: '{"Hello": "World"}')
         matcher.matches?(resource_class) { }
 
-        expect(matcher.failure_message).to eq('expected the 201 status code to be handled by the class.')
+        expect(matcher.failure_message).to eq('expected the 201 status code to be handled by CustomClassName.')
       end
     end
 
     context "when the matchers doesnt handle the same status code" do
-      it 'returns "expected the #{status_code} status code to be handled by the class."' do
+      it 'returns "expected the #{status_code} status code to be handled by CustomClassName."' do
         resource_class.resources.action :show, 'GET /all' do
           handler(200) { |response| JSON.load(response.body) }
         end
@@ -61,7 +65,7 @@ RSpec.describe ResourceKit::Testing::ActionHandlerMatchers do
         matcher.with(status: 200, body: '{"Hello": "World"}')
         matcher.matches?(resource_class) { }
 
-        expect(matcher.failure_message).to eq('expected :all to be handled by the class.')
+        expect(matcher.failure_message).to eq('expected :all to be handled by CustomClassName.')
       end
     end
   end
