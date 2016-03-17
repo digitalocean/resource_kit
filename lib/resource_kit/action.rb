@@ -23,7 +23,7 @@ module ResourceKit
 
     def query_keys(*keys)
       return @query_keys if keys.empty?
-      @query_keys += keys
+      @query_keys += keys.flatten
     end
 
     def handlers

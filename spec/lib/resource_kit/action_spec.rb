@@ -66,6 +66,11 @@ RSpec.describe ResourceKit::Action do
       action.query_keys :per_page, :page
       expect(action.query_keys).to include(:per_page, :page)
     end
+
+    it "allows setting known query parameters as an array" do
+      action.query_keys [:per_page, :page]
+      expect(action.query_keys).to include(:per_page, :page)
+    end
   end
 
   describe '#before_request' do
