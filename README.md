@@ -124,6 +124,54 @@ resource = CommentResource.new(connection: conn, scope: user)
 comments = resource.all #=> Will fetch from /users/123/comments
 ```
 
+
+## Query Params
+
+If you would like to send a query along with your endpoint you can define the query keys like this:
+
+```ruby
+class DropletResource < ResourceKit::Resource
+  resources do
+    action :all, 'GET /v2/droplets' do
+      query_keys :page, :per_page
+      handler(:ok) { |response| DropletMapping.extract_collection(response.body, :read) }
+    end
+  end
+end
+```
+
+Then just pass the key values along with the method call:
+
+```
+resource.all(page: 2, per_page: 3)
+```
+
+If your resource uses non-ruby style keys, you can instead use a hash to map the non-ruby style key to
+the ruby style:
+
+```ruby
+class DropletResource < ResourceKit::Resource
+  resources do
+    action :all, 'GET /v2/droplets' do
+      query_keys :page, perPage: :per_page
+      handler(:ok) { |response| DropletMapping.extract_collection(response.body, :read) }
+    end
+  end
+end
+```
+
+Then just pass the key values along with the method call:
+
+```
+resource.all(page: 2, per_page: 3)
+```
+
+And the params that will be sent will look like this:
+
+```
+/v2/droplets?page=2perPage=3
+```
+
 ## Test Helpers
 
 ResourceKit supplys test helpers that assist in certain things you'd want your resource classes to do.
