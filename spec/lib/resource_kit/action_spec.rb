@@ -66,6 +66,11 @@ RSpec.describe ResourceKit::Action do
       action.query_keys :per_page, :page
       expect(action.query_keys).to include(:per_page, :page)
     end
+
+    it 'allows setting known query parameters with non-ruby param mapped to ruby like keys' do
+      action.query_keys :page, { perPage: :per_page }, :id
+      expect(action.query_keys).to include(:page, {perPage: :per_page}, :id)
+    end
   end
 
   describe '#before_request' do

@@ -38,9 +38,9 @@ module ResourceKit
       pre_vals = uri.query_values || {}
       params = query_param_keys.each_with_object(pre_vals) do |key, query_values|
         if key.class == Hash
-          endpoint_key = key.keys.first
-          key = key.values.first
-          query_values[endpoint_key] = values[key] if values.has_key?(key)
+          key.each do |endpoint_key, key|
+            query_values[endpoint_key] = values[key] if values.has_key?(key)
+          end
         else
           query_values[key] = values[key] if values.has_key?(key)
         end
