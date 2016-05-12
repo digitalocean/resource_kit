@@ -52,7 +52,7 @@ RSpec.describe ResourceKit::EndpointResolver do
         endpoint = resolver.resolve(page: 3, per_page: 2)
 
         uri = Addressable::URI.parse(endpoint)
-        expect(uri.query_values).to eq( "page" => '3', "perPage" => '2')
+        expect(uri.query_values).to eq("page" => '3', "perPage" => '2')
       end
     end
 
