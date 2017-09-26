@@ -163,3 +163,7 @@ Things we've thought about but just haven't implemented are:
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
+
+## Releasing
+
+
