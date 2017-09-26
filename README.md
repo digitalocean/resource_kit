@@ -166,4 +166,13 @@ Things we've thought about but just haven't implemented are:
 
 ## Releasing
 
+1. Update the [version](./lib/resource_kit/version.rb) 
+2. Commit the version and push it to master
+3. Run `rake release`
+
+Note: In order to run `rake release` you must be authenticated w/ rubygems.org.  To do this, you need to locate the rubygems account information contained within DOs lastpass account (search for rubygems).
+Once you have done this, do the following:
+1. `gem push`
+2. Follow the prompts and add the required information
+3. Run `rake release`
 
