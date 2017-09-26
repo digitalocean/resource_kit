@@ -35,7 +35,7 @@ module ResourceKit
         handlers[:any] = block
       else
         response_codes.each do |code|
-          code = StatusCodeMapper.code_for(code) unless code.is_a?(Fixnum)
+          code = StatusCodeMapper.code_for(code) unless code.is_a?(Integer)
           handlers[code] = block
         end
       end
