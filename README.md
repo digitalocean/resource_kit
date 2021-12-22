@@ -124,6 +124,32 @@ resource = CommentResource.new(connection: conn, scope: user)
 comments = resource.all #=> Will fetch from /users/123/comments
 ```
 
+## Query Parameters
+
+Sometimes you may want to send additional query parameters with your requests that are not part of the path.
+To do this, you will need to tell the action which parameters it is allowed to accept and send using the `query_key` method.
+
+Any parameters that are not listed will not be sent.
+
+For example, you may want to send a page number and the number of posts per page when requesting a list of Posts:
+
+```ruby
+class PostResource < ResourceKit::Resource
+  resources do
+    action :all do
+      verb :get
+      path { "/posts" }
+      query_keys :page, :posts_per_page
+      handler(200) { |resp| PostMapping.extract_collection(resp.body, :read) }
+    end
+  end
+end
+
+user = User.find(123)
+resource = CommentResource.new(connection: conn, scope: user)
+comments = resource.all(page: 10, posts_per_page: 20) #=> Will fetch from /posts?page=10&posts_per_page=20
+```
+
 ## Test Helpers
 
 ResourceKit supplys test helpers that assist in certain things you'd want your resource classes to do.
