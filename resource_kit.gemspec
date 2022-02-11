@@ -6,8 +6,8 @@ require 'resource_kit/version'
 Gem::Specification.new do |spec|
   spec.name          = "resource_kit"
   spec.version       = ResourceKit::VERSION
-  spec.authors       = ["Robert Ross", "Ivan Vanderbyl"]
-  spec.email         = ["engineering@digitalocean.com", "rross@digitalocean.com", "ivan@digitalocean.com"]
+  spec.authors       = ["DigitalOcean Engineering"]
+  spec.email         = ["api-engineering@digitalocean.com"]
   spec.summary       = %q{Resource Kit provides tools to aid in making API Clients. Such as URL resolving, Request / Response layer, and more.}
   spec.description   = ''
   spec.homepage      = "https://github.com/digitaloceancloud/resource_kit"
