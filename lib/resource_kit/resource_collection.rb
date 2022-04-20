@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module ResourceKit
   class ResourceCollection
     extend Forwardable
