@@ -12,8 +12,9 @@ module ResourceKit
     def resolve(values = {})
       uri = Addressable::URI.parse(path)
       new_path = generated_path(uri.path, values)
+      trailing_slash = uri.path.length > 1 && uri.path[-1] == "/" ? "/" : ""
 
-      uri.path = normalized_path_components(new_path)
+      uri.path = normalized_path_components(new_path) + trailing_slash
       uri.query = append_query_values(uri, values) unless query_param_keys.empty?
 
       uri.to_s
