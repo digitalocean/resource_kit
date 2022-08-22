@@ -45,6 +45,17 @@ RSpec.describe ResourceKit::EndpointResolver do
       end
     end
 
+    context 'with query parameter mapped to different name' do
+      let(:query_param_keys) { [:page, { perPage: :per_page }] }
+
+      it 'generates a URL with query parameters set correctly' do
+        endpoint = resolver.resolve(page: 3, per_page: 2)
+
+        uri = Addressable::URI.parse(endpoint)
+        expect(uri.query_values).to eq("page" => '3', "perPage" => '2')
+      end
+    end
+
     context 'with query parameters already appended' do
       let(:path) { '/:something/users?foo=bar' }
       let(:query_param_keys) { [:per_page, :page] }

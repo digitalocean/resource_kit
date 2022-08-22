@@ -37,7 +37,13 @@ module ResourceKit
     def append_query_values(uri, values)
       pre_vals = uri.query_values || {}
       params = query_param_keys.each_with_object(pre_vals) do |key, query_values|
-        query_values[key] = values[key] if values.has_key?(key)
+        if key.class == Hash
+          key.each do |endpoint_key, key|
+            query_values[endpoint_key] = values[key] if values.has_key?(key)
+          end
+        else
+          query_values[key] = values[key] if values.has_key?(key)
+        end
       end
 
       URI.encode_www_form(params)
