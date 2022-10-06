@@ -64,4 +64,17 @@ RSpec.describe ResourceKit::ResourceCollection do
       expect(retrieved_action.name).to eq(:all)
     end
   end
+
+  describe '#default_connection' do
+    it 'sets the default connection when passed a block' do
+      proc = Proc.new { }
+      collection.default_connection(&proc)
+
+      expect(collection.default_connection).to eq(proc)
+    end
+
+    it 'returns a proc that returns nil when nothing has been set' do
+      expect(collection.default_connection.call).to be_nil
+    end
+  end
 end

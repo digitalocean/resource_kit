@@ -44,6 +44,25 @@ module ResourceKit
       end
     end
 
+    def default_connection(&connection_block)
+      @default_connection = connection_block if block_given?
+      @default_connection || Proc.new { }
+    end
+
+    def dup
+      collection = ResourceCollection.new
+
+      # Copy all actions into the collection
+      each do |action|
+        collection << action
+      end
+
+      # Copy all of the default handlers in
+      collection.default_handlers.merge!(default_handlers)
+
+      collection
+    end
+
     private
 
     def parse_verb_and_path(verb_and_path)

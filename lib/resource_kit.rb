@@ -14,4 +14,5 @@ module ResourceKit
   autoload :StatusCodeMapper, 'resource_kit/status_code_mapper'
   autoload :EndpointResolver, 'resource_kit/endpoint_resolver'
 
+  autoload :SingletonRequests, 'resource_kit/singleton_requests'
 end

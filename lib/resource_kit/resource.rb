@@ -8,7 +8,7 @@ module ResourceKit
     attr_reader :connection, :scope
 
     def initialize(connection: nil, scope: nil)
-      @connection = connection
+      @connection = connection || _resources.default_connection.call
       @scope = scope
     end
 
@@ -21,6 +21,10 @@ module ResourceKit
       end
 
       self._resources
+    end
+
+    def self.inherited(base)
+      base._resources = resources.dup
     end
 
     def action(name)

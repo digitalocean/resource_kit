@@ -149,6 +149,49 @@ RSpec.describe MyResourceClass, resource_kit: true do
 end
 ```
 
+## Default Connection Factory
+
+ResourceKit also allows you to specify a default connection factory. This is useful for when you want to just initialize resources, or enable class methods.
+
+```ruby
+class BaseResource < ResourceKit::Resource
+  resources do
+    default_handler { |resp| raise "Unexpected status code: #{resp.code}" }
+    connection { Faraday.new(url: 'http://example.com') }
+  end
+end
+
+class UsersResource < BaseResource
+  resources do
+    get "/users/info" => :info
+  end
+end
+
+resource = UsersResource.new
+user_info = resource.info
+```
+
+## Singleton Methods
+
+In most cases, you don't care about instantiating a class to use it. You just want the class to respond to a singleton method.
+
+ResourceKit allows you to do this by mixing in `ResourceKit::SingletonRequests` into your resource classes. This makes calling methods a little simpler, but requires you setup a default connection in order to work.
+
+```ruby
+class UsersResource < ResourceKit::Resource
+  include ResourceKit::SingletonRequests
+
+  resources do
+    default_handler { |resp| raise "Unexpected status code: #{resp.code}" }
+    connection { Faraday.new(url: 'http://example.com') }
+
+    get '/api/users/:id' => :find
+  end
+end
+
+users_info = UsersResource.find(id: 123)
+```
+
 ### Nice to have's
 
 Things we've thought about but just haven't implemented are:

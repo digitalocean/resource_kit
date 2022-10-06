@@ -16,14 +16,6 @@ RSpec.describe ResourceKit::MethodFactory do
       expect(instance).to respond_to(:find, :all)
     end
 
-    it 'bails when the method is already defined' do
-      collection.action :all
-
-      expect {
-        ResourceKit::MethodFactory.construct(klass, collection)
-      }.to raise_exception(ArgumentError).with_message("Action 'all' is already defined on `#{klass}`")
-    end
-
     it 'adds the correct interface for the action' do
       ResourceKit::MethodFactory.construct(klass, collection)
       method_sig = klass.instance_method(:all).parameters
